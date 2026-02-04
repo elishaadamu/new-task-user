@@ -50,7 +50,7 @@ const ProfileWelcome = () => {
           <p className="text-muted-foreground">Check your reports</p>
           {walletBalance !== null && (
             <p className="text-sm font-semibold text-primary mt-2">
-              Balance: ${walletBalance.toFixed(2)}
+              Balance: ₦{walletBalance.toFixed(2)}
             </p>
           )}
         </div>

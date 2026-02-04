@@ -63,13 +63,13 @@ const SidebarContent: MenuItem[] = [
       //   url: "/users",
       //   isPro: false,
       // },
-      // {
-      //   id: uniqueId(),
-      //   name: "Tasks",
-      //   icon: "solar:checklist-minimalistic-linear",
-      //   url: "/task",
-      //   isPro: false,
-      // },
+      {
+        id: uniqueId(),
+        name: "Tasks",
+        icon: "solar:checklist-minimalistic-linear",
+        url: "/task",
+        isPro: false,
+      },
       {
         id: uniqueId(),
         name: "Manage Wallet",

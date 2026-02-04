@@ -135,7 +135,7 @@ export default function WalletTable({ wallets }: WalletTableProps) {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Badge variant={transaction.type === "CREDIT" ? "default" : "destructive"}>
+                      <Badge className="text-white" variant={transaction.type === "CREDIT" ? "default" : "destructive"}>
                         {transaction.type}
                       </Badge>
                     </TableCell>

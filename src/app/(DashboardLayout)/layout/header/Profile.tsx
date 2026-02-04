@@ -103,7 +103,7 @@ const Profile = () => {
                 </span>
                 {walletBalance !== null && (
                   <p className="text-xs text-muted-foreground mt-2">
-                    Balance: ${walletBalance.toFixed(2)}
+                    Balance: ₦{walletBalance.toFixed(2)}
                   </p>
                 )}
               </div>

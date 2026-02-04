@@ -30,23 +30,11 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Icon } from "@iconify/react";
 import { Badge } from "@/components/ui/badge";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+
 import { CustomAlertDialog } from "@/components/CustomAlertDialog";
 import { API_CONFIG, apiUrl } from "@/app/api/api";
 import axios from "axios";
 import {
-  MoreHorizontal,
-  Trash2,
-  CheckCircle2,
-  Clock,
-  PlayCircle,
-  XCircle,
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
@@ -191,68 +179,9 @@ export default function TaskPage() {
     });
   };
 
-  const handleUpdateStatus = async (taskId: string, newStatus: string) => {
-    try {
-      const response = await axios.patch(
-        apiUrl(`${API_CONFIG.ENDPOINTS.TASK.UPDATE}${taskId}/status`),
-        { status: newStatus },
-        { withCredentials: true },
-      );
+  
 
-      if (response.status === 200) {
-        showAlert(
-          "Success",
-          `Task status updated to ${newStatus}`,
-          undefined,
-          "success",
-        );
-        fetchTasks();
-      }
-    } catch (error: any) {
-      console.error("Error updating task status:", error);
-      showAlert(
-        "Error",
-        error.response?.data?.message || "Failed to update status",
-        undefined,
-        "danger",
-      );
-    }
-  };
-
-  const handleDeleteTask = async (taskId: string) => {
-    setAlertConfig({
-      isOpen: true,
-      title: "Confirm Delete",
-      description:
-        "Are you sure you want to delete this task? This action cannot be undone.",
-      variant: "danger",
-      onConfirm: async () => {
-        try {
-          const response = await axios.delete(
-            apiUrl(`${API_CONFIG.ENDPOINTS.TASK.DELETE}${taskId}`),
-            { withCredentials: true },
-          );
-          if (response.status === 200) {
-            showAlert(
-              "Success",
-              "Task deleted successfully",
-              undefined,
-              "success",
-            );
-            setTasks((prev) => prev.filter((t) => (t._id || t.id) !== taskId));
-          }
-        } catch (error: any) {
-          console.error("Error deleting task:", error);
-          showAlert(
-            "Error",
-            error.response?.data?.message || "Failed to delete task",
-            undefined,
-            "danger",
-          );
-        }
-      },
-    });
-  };
+  
 
   const handlePostComment = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -409,7 +338,6 @@ export default function TaskPage() {
               <TableHead>Description</TableHead>
               <TableHead className="w-[150px]">Date Created</TableHead>
               <TableHead className="w-[120px]">Status</TableHead>
-              <TableHead className="text-right w-[100px]">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -503,75 +431,6 @@ export default function TaskPage() {
                     >
                       {t.status || "PENDING"}
                     </Badge>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon">
-                          <MoreHorizontal className="h-4 w-4" />
-                          <span className="sr-only">Open menu</span>
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-[180px]">
-                        <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">
-                          Update Status
-                        </div>
-                        <DropdownMenuItem
-                          onClick={() =>
-                            handleUpdateStatus(t._id || t.id, "PENDING")
-                          }
-                        >
-                          <Clock className="mr-2 h-4 w-4 text-primary" />
-                          <span>Pending</span>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() =>
-                            handleUpdateStatus(t._id || t.id, "IN_PROGRESS")
-                          }
-                        >
-                          <PlayCircle className="mr-2 h-4 w-4 text-warning" />
-                          <span>In Progress</span>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() =>
-                            handleUpdateStatus(t._id || t.id, "SUCCESS")
-                          }
-                        >
-                          <CheckCircle2 className="mr-2 h-4 w-4 text-success" />
-                          <span>Success</span>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() =>
-                            handleUpdateStatus(t._id || t.id, "FAILED")
-                          }
-                        >
-                          <XCircle className="mr-2 h-4 w-4 text-destructive" />
-                          <span>Failed</span>
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                          onClick={() => {
-                            setSelectedTaskForComment(t);
-                            setAdminComment(t.comment || "");
-                            setIsCommentModalOpen(true);
-                          }}
-                        >
-                          <Icon
-                            icon="solar:chat-line-linear"
-                            className="mr-2 h-4 w-4 text-info"
-                          />
-                          <span>Add Comment</span>
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                          className="text-destructive focus:text-destructive focus:bg-destructive/10"
-                          onClick={() => handleDeleteTask(t._id || t.id)}
-                        >
-                          <Trash2 className="mr-2 h-4 w-4" />
-                          <span>Delete Task</span>
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
                   </TableCell>
                 </TableRow>
               ))

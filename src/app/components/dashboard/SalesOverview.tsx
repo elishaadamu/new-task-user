@@ -13,6 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
@@ -22,6 +23,8 @@ interface Task {
   title: string;
   status: "PENDING" | "IN_PROGRESS" | "SUCCESS" | "FAILED";
   createdAt?: string;
+  weekStart?: string;
+  weekEnd?: string;
 }
 
 const SalesOverview: React.FC = () => {
@@ -36,6 +39,12 @@ const SalesOverview: React.FC = () => {
   const [selectedMonth, setSelectedMonth] = useState<string>("");
   const [availableMonths, setAvailableMonths] = useState<string[]>([]);
   const [allTasks, setAllTasks] = useState<Task[]>([]);
+  const [weeks, setWeeks] = useState<{
+    start: string;
+    end: string;
+    label: string;
+  }[]>([]);
+  const [selectedWeek, setSelectedWeek] = useState<string>("all");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -77,6 +86,20 @@ const SalesOverview: React.FC = () => {
 
         setAllTasks(taskList);
 
+        // derive unique weeks
+        const map = new Map<string, { start: string; end: string; label: string }>();
+        taskList.forEach((t) => {
+          if (t.weekStart && t.weekEnd) {
+            const key = `${t.weekStart}|${t.weekEnd}`;
+            if (!map.has(key)) {
+              const s = new Date(t.weekStart);
+              const e = new Date(t.weekEnd);
+              map.set(key, { start: t.weekStart, end: t.weekEnd, label: `${s.toLocaleDateString()} - ${e.toLocaleDateString()}` });
+            }
+          }
+        });
+        setWeeks(Array.from(map.values()));
+
         const monthsSet = new Set<string>();
         taskList.forEach((task) => {
           if (task.createdAt) {
@@ -111,14 +134,20 @@ const SalesOverview: React.FC = () => {
       return;
     }
 
-    const filteredTasks = allTasks.filter((task) => {
-      if (!task.createdAt) return false;
-      const date = new Date(task.createdAt);
-      const monthStr = `${date.getFullYear()}-${String(
-        date.getMonth() + 1,
-      ).padStart(2, "0")}`;
-      return monthStr === selectedMonth;
-    });
+    let filteredTasks: Task[] = [];
+
+    if (selectedWeek && selectedWeek !== "all") {
+      filteredTasks = allTasks.filter((task) => task.weekStart === selectedWeek);
+    } else {
+      filteredTasks = allTasks.filter((task) => {
+        if (!task.createdAt) return false;
+        const date = new Date(task.createdAt);
+        const monthStr = `${date.getFullYear()}-${String(
+          date.getMonth() + 1,
+        ).padStart(2, "0")}`;
+        return monthStr === selectedMonth;
+      });
+    }
 
     // Process data for chart
     const tasksByDateAndStatus: Record<string, Record<string, number>> = {};
@@ -235,7 +264,7 @@ const SalesOverview: React.FC = () => {
         },
       },
     });
-  }, [selectedMonth, allTasks, isLoading]);
+  }, [selectedMonth, allTasks, isLoading, selectedWeek]);
 
   const formatMonth = (monthStr: string) => {
     const [year, month] = monthStr.split("-");
@@ -253,19 +282,37 @@ const SalesOverview: React.FC = () => {
           </p>
         </div>
         {availableMonths.length > 0 && (
-          <div className="w-[180px]">
-            <Select value={selectedMonth} onValueChange={setSelectedMonth}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select Month" />
-              </SelectTrigger>
-              <SelectContent>
-                {availableMonths.map((month) => (
-                  <SelectItem key={month} value={month}>
-                    {formatMonth(month)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          <div className="flex items-center mt-5 gap-2">
+            <div className="w-[180px]">
+              <Select value={selectedMonth} onValueChange={setSelectedMonth}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select Month" />
+                </SelectTrigger>
+                <SelectContent>
+                  {availableMonths.map((month) => (
+                    <SelectItem key={month} value={month}>
+                      {formatMonth(month)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* <div className="w-[180px]">
+              <Select value={selectedWeek} onValueChange={setSelectedWeek}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select Week" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={"all"}>All Weeks</SelectItem>
+                  {weeks.map((w) => (
+                    <SelectItem key={w.start} value={w.start}>
+                      {w.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div> */}
           </div>
         )}
       </div>

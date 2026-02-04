@@ -23,6 +23,8 @@ interface Task {
   id?: string;
   title: string;
   status: "PENDING" | "IN_PROGRESS" | "SUCCESS" | "FAILED";
+  weekStart?: string;
+  weekEnd?: string;
   createdAt?: string;
 }
 
@@ -34,8 +36,14 @@ const statusIcons: Record<string, React.ReactNode> = {
 };
 
 export default function DashboardRecentTasks() {
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const [fetchedTasks, setFetchedTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
+  const [weeks, setWeeks] = useState<{
+    start: string;
+    end: string;
+    label: string;
+  }[]>([]);
+  const [selectedWeek, setSelectedWeek] = useState<string>("all");
 
   useEffect(() => {
     fetchTasks();
@@ -73,17 +81,39 @@ export default function DashboardRecentTasks() {
         taskList = [...current, ...previous];
       }
 
-      setTasks(taskList.slice(0, 5));
+      setFetchedTasks(taskList);
+
+      // derive unique weeks
+      const map = new Map<string, { start: string; end: string; label: string }>();
+      taskList.forEach((t) => {
+        if (t.weekStart && t.weekEnd) {
+          const key = `${t.weekStart}|${t.weekEnd}`;
+          if (!map.has(key)) {
+            const s = new Date(t.weekStart);
+            const e = new Date(t.weekEnd);
+            const label = `${s.toLocaleDateString()} - ${e.toLocaleDateString()}`;
+            map.set(key, { start: t.weekStart, end: t.weekEnd, label });
+          }
+        }
+      });
+      setWeeks(Array.from(map.values()));
     } catch (error) {
       console.error("Error fetching tasks:", error);
-      setTasks([]);
+      setFetchedTasks([]);
     } finally {
       setLoading(false);
     }
   };
 
+  // derive filtered lists for rendering
+  const filteredTasksAll = fetchedTasks.filter((task) =>
+    selectedWeek === "all" ? true : task.weekStart === selectedWeek,
+  );
+
+  const topTasks = filteredTasksAll.slice(0, 5);
+
   return (
-    <CardBox className="h-full">
+    <CardBox className="h-full w-full">
       <div className="flex justify-between items-start mb-6 gap-4">
         <div>
           <h5 className="card-title flex items-center gap-2">
@@ -97,11 +127,26 @@ export default function DashboardRecentTasks() {
             Latest administrative tasks
           </p>
         </div>
-        <Link href="/task">
-          <Button variant="outline" size="sm" className="whitespace-nowrap">
-            View All
-          </Button>
-        </Link>
+        <div className="flex items-center flex-col justify-start gap-3">
+          {/* <select
+            value={selectedWeek}
+            onChange={(e) => setSelectedWeek(e.target.value)}
+            className="border bg-card text-sm rounded px-2 py-1"
+          >
+            <option value="all">All Weeks</option>
+            {weeks.map((w) => (
+              <option key={w.start} value={w.start}>
+                {w.label}
+              </option>
+            ))}
+          </select> */}
+
+          <Link href="/task">
+            <Button variant="outline" size="sm" className="whitespace-nowrap">
+              View All
+            </Button>
+          </Link>
+        </div>
       </div>
 
       <div className="overflow-x-auto">
@@ -120,7 +165,7 @@ export default function DashboardRecentTasks() {
                   <span className="text-muted-foreground">Loading...</span>
                 </TableCell>
               </TableRow>
-            ) : tasks.length === 0 ? (
+            ) : filteredTasksAll.length === 0 ? (
               <TableRow>
                 <TableCell
                   colSpan={3}
@@ -130,7 +175,8 @@ export default function DashboardRecentTasks() {
                 </TableCell>
               </TableRow>
             ) : (
-              tasks.map((task) => (
+              // show top 5 of filtered tasks
+              topTasks.map((task) => (
                 <TableRow key={task._id || task.id}>
                   <TableCell className="font-medium truncate max-w-[200px]">
                     {task.title}

@@ -14,10 +14,10 @@ const page = () => {
         <div className="col-span-12">
           <ProfileWelcome />
         </div>
-        {/*
-        <div className="col-span-12">
+        
+        {/* <div className="col-span-12">
           <DashboardStats />
-        </div>
+        </div> */}
         <div className="lg:col-span-8 col-span-12">
           <SalesOverview />
         </div>
@@ -28,12 +28,9 @@ const page = () => {
             </div>
           </div>
         </div>
-        <div className="lg:col-span-6 col-span-12">
-          <DashboardRecentUsers />
-        </div>
-        <div className="lg:col-span-6 col-span-12">
+        <div className="lg:col-span-12 col-span-12">
           <DashboardRecentTasks />
-        </div> */}
+        </div> 
         <div className="col-span-12">
           <DashboardRecentWallets />
         </div>

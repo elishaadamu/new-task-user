@@ -1,6 +1,8 @@
 "use client"
 import dynamic from "next/dynamic";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import { Button } from "@/components/ui/button";
+import React, { useState } from "react";
 import CardBox from "../shared/CardBox";
 import { ApexOptions } from "apexcharts";
 
@@ -8,6 +10,7 @@ const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 
 const MonthlyEarning = () => {
+    const [thisWeekSelected, setThisWeekSelected] = useState(false);
     const ChartData: ApexOptions = {
         series: [
             {
@@ -67,8 +70,17 @@ const MonthlyEarning = () => {
                 <div className="px-6 pt-6">
                     <div className="flex items-center justify-between mb-2">
                         <h5 className="card-title mb-0">Monthly Earnings</h5>
-                        <div className="text-white bg-secondary rounded-full h-11 w-11 flex items-center justify-center">
-                            <Icon icon='tabler:currency-dollar' className="text-xl" />
+                        <div className="flex items-center gap-2">
+                            <Button
+                                variant={thisWeekSelected ? "default" : "outline"}
+                                size="sm"
+                                onClick={() => setThisWeekSelected((s) => !s)}
+                            >
+                                This Week
+                            </Button>
+                            <div className="text-white bg-secondary rounded-full h-11 w-11 flex items-center justify-center">
+                                <Icon icon='tabler:currency-dollar' className="text-xl" />
+                            </div>
                         </div>
                     </div>
                     <div className="grid grid-cols-12 gap-6 mb-4">
