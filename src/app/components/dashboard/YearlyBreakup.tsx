@@ -108,6 +108,10 @@ const YearlyBreakup: React.FC = () => {
                           .reduce((a: number, b: number) => a + b, 0)
                           .toString();
                       },
+                      color: "#7C8FAC",
+                    },
+                    value: {
+                      color: "#7C8FAC",
                     },
                   },
                 },
@@ -123,6 +127,9 @@ const YearlyBreakup: React.FC = () => {
               itemMargin: {
                 horizontal: 10,
                 vertical: 5,
+              },
+              labels: {
+                colors: "#7C8FAC",
               },
             },
             stroke: {

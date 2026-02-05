@@ -6,6 +6,9 @@ import DashboardStats from "../components/dashboard/DashboardStats";
 import DashboardRecentUsers from "../components/dashboard/DashboardRecentUsers";
 import DashboardRecentTasks from "../components/dashboard/DashboardRecentTasks";
 import DashboardRecentWallets from "../components/dashboard/DashboardRecentWallets";
+import WeekReport from "../components/dashboard/WeekReport";
+import TaskStatusTable from "../components/dashboard/TaskStatusTable";
+
 
 const page = () => {
   return (
@@ -19,7 +22,8 @@ const page = () => {
           <DashboardStats />
         </div> */}
         <div className="lg:col-span-8 col-span-12">
-          <SalesOverview />
+          {/* <SalesOverview /> */}
+          <TaskStatusTable />
         </div>
         <div className="lg:col-span-4 col-span-12">
           <div className="grid grid-cols-12 gap-6">
@@ -28,8 +32,11 @@ const page = () => {
             </div>
           </div>
         </div>
-        <div className="lg:col-span-12 col-span-12">
+        {/* <div className="lg:col-span-8 col-span-12">
           <DashboardRecentTasks />
+        </div> */}
+        <div className="lg:col-span-12 col-span-12">
+          <WeekReport />
         </div> 
         <div className="col-span-12">
           <DashboardRecentWallets />

@@ -18,6 +18,7 @@ export const API_CONFIG = {
       DELETE: "admin/tasks/", //APPEND {taskId}
       UPDATE: "admin/tasks/", //APPEND {taskId}/status
       COMMENT: "admin/tasks/", //APPEND {taskId}/comment
+      WEEKLY: "tasks/my",
     },
     PROFILE: {
       GET: "auth/profile",

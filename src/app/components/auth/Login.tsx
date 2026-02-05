@@ -75,7 +75,7 @@ export const Login = () => {
               <FullLogo />
             </div>
             <p className="text-sm text-muted-foreground text-center mb-2">
-              Login as an Admin
+              Login as a User
             </p>
             <form onSubmit={handleSubmit}>
               <div>

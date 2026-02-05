@@ -381,7 +381,7 @@ export default function TaskPage() {
                             {t.comment && (
                               <div className="bg-muted px-2 py-1 rounded text-xs border-l-2 border-primary mt-1">
                                 <span className="font-bold text-primary mr-1">
-                                  User:
+                                  Admin:
                                 </span>
                                 <span className="text-muted-foreground truncate block">
                                   {t.comment}
@@ -401,7 +401,7 @@ export default function TaskPage() {
                             {t.comment && (
                               <div className="pt-2 border-t">
                                 <p className="font-bold text-xs uppercase text-primary mb-1">
-                                  User Comment
+                                  Admin Comment
                                 </p>
                                 <p className="text-sm">{t.comment}</p>
                               </div>
@@ -494,7 +494,7 @@ export default function TaskPage() {
         <DialogContent className="sm:max-w-[500px]">
           <form onSubmit={handlePostComment}>
             <DialogHeader>
-              <DialogTitle>User Comment</DialogTitle>
+              <DialogTitle>Admin Comment</DialogTitle>
               <DialogDescription>
                 Add a feedback or note to this task.
               </DialogDescription>
